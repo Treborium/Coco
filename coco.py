@@ -1,99 +1,46 @@
 #!/usr/bin/env python3
 
+import click
 import json
-import subprocess
-import re
-import sys
-from pathlib import Path
-from string import Template
-
-from bullet import Bullet, charDef, colors, keyhandler, utils
-
-CHOICES_KEY = 'choices'
-PROMPT_KEY = 'prompt'
-REGEX_STRING = "\{(.+?)\}"
-QUIT_KEY = 113  # ASCII value of 'q'
+import os
 
 
-class CloseableBullet(Bullet):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+@click.group()
+def cli():
+    pass
 
-    @keyhandler.register(QUIT_KEY)
-    @keyhandler.register(charDef.ESC_KEY)
-    @keyhandler.register(charDef.INTERRUPT_KEY)
-    def force_quit(self):
-        utils.moveCursorDown(len(self.choices) - self.pos)
-        sys.exit()
+@cli.command("add", short_help="Add link to a config file")
+@click.argument("path", required=True, type=click.Path(resolve_path=True))
+@click.argument("name", required=True)
+def add_config_file(path, name):
+    """Add a link to a config file"""
 
+    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+    new_entry = {name: path}
 
-class ConfigFile:
-    def __init__(self, path):
-        with open(path) as file:
-            configs = json.load(file)
+    with open(config_path) as f:
+        config = json.load(f)
 
-        self.choices = configs[CHOICES_KEY]
-        self.prompt = configs[PROMPT_KEY]
+    config.update(new_entry)
 
-
-def fetch_args(arguments):
-    args = list()
-    print("\n")
-    for arg in arguments:
-        args.append(input(f"{arg}: "))
-    return args
+    with open(config_path, 'w') as f:
+        json.dump(config, f)
 
 
-def run_shell_command(cmd):
-    return subprocess.run(cmd.split(" "))
+@cli.command("rm", short_help="Remove link to a config file")
+@click.argument("name", required=True)
+def remove_link(name):
+    """Remove a link to a config file"""
 
+    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+    with open(config_path) as f:
+        config = json.load(f)
+        del config[name]
 
-def contains_variables(command: str) -> bool:
-    return bool(re.search(REGEX_STRING, command))
+    with open(config_path, 'w') as f:
+        json.dump(config, f)
 
-
-def substitute_variables(command: str, variables, args) -> str:
-    template = Template('{$variable}')
-
-    for variable, arg in zip(variables, args):
-        command = command.replace(
-            template.substitute(variable=variable), arg)
-
-    return command
 
 
 if __name__ == '__main__':
-    config = ConfigFile(sys.argv[1])
-
-    prompt = config.prompt
-    choices = list(config.choices.keys())
-    bullet = '> '
-
-    cli = CloseableBullet(prompt=prompt,
-                          choices=choices,
-                          bullet=bullet,
-                          bullet_color=colors.foreground['green'],
-                          word_on_switch=colors.bright(
-                              colors.foreground['white']),
-                          background_on_switch=colors.background['default'],
-                          indent=1,
-                          shift=1
-                          )
-
-    try:
-        result = cli.launch()
-    except KeyboardInterrupt:
-        cli.force_quit()
-
-    command = config.choices[result]
-
-    if contains_variables(command):
-        regex = re.compile(REGEX_STRING)
-        variables = regex.findall(command)
-
-        args = sys.argv[2:] if len(sys.argv) > 2 else fetch_args(variables)
-        command = substitute_variables(command, variables, args)
-
-    utils.cprint(f"\n\n{command}", color=colors.bright(
-        colors.foreground['green']))
-    run_shell_command(command)
+    cli()
