@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import json
+import subprocess
+import re
 import sys
 from pathlib import Path
 
@@ -33,6 +35,14 @@ class ConfigFile:
         self.prompt = configs[PROMPT_KEY]
 
 
+def fetch_args():
+    return input("Args: ")
+
+
+def run_shell_command(cmd):
+    return subprocess.run(cmd.split(" "))   
+
+
 if __name__ == '__main__':
     config = ConfigFile(CONFIG_FILE_PATH)
 
@@ -57,3 +67,8 @@ if __name__ == '__main__':
         utils.cprint('Aborting...', color=colors.bright(
             colors.foreground['red']))
         cli.force_quit()
+
+    args = sys.argv[1:] if len(sys.argv) > 1 else fetch_args()
+
+    command = config.choices[result].replace('{package}', args)
+    run_shell_command(command)
