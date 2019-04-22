@@ -6,6 +6,9 @@ import os
 
 import prompt
 
+
+CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+
 @click.group()
 def cli():
     pass
@@ -17,15 +20,14 @@ def cli():
 def add_config_file(path, name):
     """Add a link to a config file"""
 
-    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
     new_entry = {name: path}
 
-    with open(config_path) as f:
+    with open(CONFIG_PATH) as f:
         config = json.load(f)
 
     config.update(new_entry)
 
-    with open(config_path, 'w') as f:
+    with open(CONFIG_PATH, 'w') as f:
         json.dump(config, f)
 
 
@@ -34,12 +36,11 @@ def add_config_file(path, name):
 def remove_link(name):
     """Remove a link to a config file"""
 
-    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
-    with open(config_path) as f:
+    with open(CONFIG_PATH) as f:
         config = json.load(f)
         del config[name]
 
-    with open(config_path, 'w') as f:
+    with open(CONFIG_PATH, 'w') as f:
         json.dump(config, f)
 
 
@@ -47,19 +48,19 @@ def remove_link(name):
 def list_links():
     """List all links defined in the config file"""
 
-    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
-    with open(config_path) as f:
+    with open(CONFIG_PATH) as f:
         config = json.load(f)
 
     for key, value in config.items():
         print(f"{key} -> {value}")
 
+
 @cli.command("run", short_help="Run a prompt")
 @click.argument("name", required=True)
 def run_prompt(name):
-
-    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
-    with open(config_path) as f:
+    """Run a prompt"""
+    
+    with open(CONFIG_PATH) as f:
         config = json.load(f)
 
     prompt.run(config[name])
