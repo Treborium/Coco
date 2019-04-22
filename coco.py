@@ -26,15 +26,20 @@ def add_prompt(path, name):
 
 @cli.command("rm", short_help="Remove a prompt")
 @click.argument("name", required=True)
-def remove_prompt(name):
+@click.option('--delete-config', is_flag=True)
+def remove_prompt(name, delete_config):
     """Remove a prompt"""
 
     with open(CONFIG_PATH) as f:
         config = json.load(f)
+        path = config[name]
         del config[name]
 
     with open(CONFIG_PATH, 'w') as f:
         json.dump(config, f)
+
+    if delete_config:
+        os.remove(path)
 
 
 @cli.command("ls", short_help="List all prompts")
@@ -63,7 +68,7 @@ def run_prompt(name, args):
 @click.argument("path", required=True, type=click.Path(resolve_path=True))
 @click.argument("name", required=True)
 def new_entry(path, name):
-    default_config = {'prompt': "", 'choices': {}}
+    default_config = {'prompt': "Select command to run:", 'choices': {}}
     with open(path, 'w') as f:
         json.dump(default_config, f)
     
