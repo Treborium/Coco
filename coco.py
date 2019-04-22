@@ -57,13 +57,15 @@ def list_links():
 
 @cli.command("run", short_help="Run a prompt")
 @click.argument("name", required=True)
-def run_prompt(name):
+@click.argument("args", nargs=-1)
+def run_prompt(name, args):
     """Run a prompt"""
     
     with open(CONFIG_PATH) as f:
         config = json.load(f)
 
-    prompt.run(config[name])
+    prompt.run(config[name], *args)
+
 
 if __name__ == '__main__':
     cli()
