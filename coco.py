@@ -41,6 +41,18 @@ def remove_link(name):
         json.dump(config, f)
 
 
+@cli.command("ls", short_help="List all links")
+def list_links():
+    """List all links defined in the config file"""
+
+    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+    with open(config_path) as f:
+        config = json.load(f)
+    
+    for key, value in config.items():
+        print(f"{key} -> {value}")
+
+
 
 if __name__ == '__main__':
     cli()
