@@ -4,12 +4,14 @@ import click
 import json
 import os
 
+import prompt
 
 @click.group()
 def cli():
     pass
 
-@cli.command("add", short_help="Add link to a config file")
+
+@cli.command("add", short_help="Add a link")
 @click.argument("path", required=True, type=click.Path(resolve_path=True))
 @click.argument("name", required=True)
 def add_config_file(path, name):
@@ -27,7 +29,7 @@ def add_config_file(path, name):
         json.dump(config, f)
 
 
-@cli.command("rm", short_help="Remove link to a config file")
+@cli.command("rm", short_help="Remove a link")
 @click.argument("name", required=True)
 def remove_link(name):
     """Remove a link to a config file"""
@@ -48,11 +50,19 @@ def list_links():
     config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
     with open(config_path) as f:
         config = json.load(f)
-    
+
     for key, value in config.items():
         print(f"{key} -> {value}")
 
+@cli.command("run", short_help="Run a prompt")
+@click.argument("name", required=True)
+def run_prompt(name):
 
+    config_path = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+    with open(config_path) as f:
+        config = json.load(f)
+
+    prompt.run(config[name])
 
 if __name__ == '__main__':
     cli()
