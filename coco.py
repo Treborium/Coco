@@ -46,7 +46,7 @@ def fetch_args(arguments):
 
 
 def run_shell_command(cmd):
-    return subprocess.run(cmd.split(" "))   
+    return subprocess.run(cmd.split(" "))
 
 
 def contains_variables(command: str) -> bool:
@@ -57,10 +57,11 @@ def substitute_variables(command: str, variables, args) -> str:
     template = Template('{$variable}')
 
     for variable, arg in zip(variables, args):
-            command = command.replace(
-                template.substitute(variable=variable), arg)
+        command = command.replace(
+            template.substitute(variable=variable), arg)
 
     return command
+
 
 if __name__ == '__main__':
     config = ConfigFile(CONFIG_FILE_PATH)
@@ -82,9 +83,7 @@ if __name__ == '__main__':
 
     try:
         result = cli.launch()
-    except KeyboardInterrupt as e:
-        utils.cprint('Aborting...', color=colors.bright(
-            colors.foreground['red']))
+    except KeyboardInterrupt:
         cli.force_quit()
 
     command = config.choices[result]
@@ -96,5 +95,6 @@ if __name__ == '__main__':
         args = sys.argv[1:] if len(sys.argv) > 1 else fetch_args(variables)
         command = substitute_variables(command, variables, args)
 
-    utils.cprint(f"\n\n{command}", color=colors.bright(colors.foreground['green']))
+    utils.cprint(f"\n\n{command}", color=colors.bright(
+        colors.foreground['green']))
     run_shell_command(command)
