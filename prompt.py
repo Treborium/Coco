@@ -52,7 +52,7 @@ def contains_variables(command: str) -> bool:
     return bool(re.search(REGEX_STRING, command))
 
 
-def substitute_variables(command: str, variables, args) -> str:
+def substitute_variables(command: str, variables: list, args: list) -> str:
     template = Template('{$variable}')
 
     for variable, arg in zip(variables, args):
@@ -62,14 +62,14 @@ def substitute_variables(command: str, variables, args) -> str:
     return command
 
 
-if __name__ == '__main__':
-    config = ConfigFile(sys.argv[1])
+def run(config_path, *arguments):
+    config = ConfigFile(config_path)
 
     prompt = config.prompt
     choices = list(config.choices.keys())
     bullet = '> '
 
-    cli = CloseableBullet(prompt=prompt, 
+    cli = CloseableBullet(prompt=prompt,
                           choices=choices,
                           bullet=bullet,
                           bullet_color=colors.foreground['green'],
@@ -91,9 +91,13 @@ if __name__ == '__main__':
         regex = re.compile(REGEX_STRING)
         variables = regex.findall(command)
 
-        args = sys.argv[2:] if len(sys.argv) > 2 else fetch_args(variables)
+        args = arguments if len(arguments) > 0 else fetch_args(variables)
         command = substitute_variables(command, variables, args)
 
     utils.cprint(f"\n\n{command}", color=colors.bright(
         colors.foreground['green']))
     run_shell_command(command)
+
+
+if __name__ == '__main__':
+    run(sys.argv[1], sys.argv[2:])
