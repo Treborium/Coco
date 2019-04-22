@@ -5,12 +5,14 @@ import subprocess
 import re
 import sys
 from pathlib import Path
+from string import Template
 
 from bullet import Bullet, charDef, colors, keyhandler, utils
 
 CONFIG_FILE_PATH = f'{Path.home()}/.config/coco/config.json'
 CHOICES_KEY = 'choices'
 PROMPT_KEY = 'prompt'
+REGEX_STRING = "\{(.+?)\}"
 QUIT_KEY = 113  # ASCII value of 'q'
 
 
@@ -35,13 +37,30 @@ class ConfigFile:
         self.prompt = configs[PROMPT_KEY]
 
 
-def fetch_args():
-    return input("Args: ")
+def fetch_args(arguments):
+    args = list()
+    print("\n")
+    for arg in arguments:
+        args.append(input(f"{arg}: "))
+    return args
 
 
 def run_shell_command(cmd):
     return subprocess.run(cmd.split(" "))   
 
+
+def contains_variables(command: str) -> bool:
+    return bool(re.search(REGEX_STRING, command))
+
+
+def substitute_variables(command: str, variables, args) -> str:
+    template = Template('{$variable}')
+
+    for variable, arg in zip(variables, args):
+            command = command.replace(
+                template.substitute(variable=variable), arg)
+
+    return command
 
 if __name__ == '__main__':
     config = ConfigFile(CONFIG_FILE_PATH)
@@ -68,7 +87,14 @@ if __name__ == '__main__':
             colors.foreground['red']))
         cli.force_quit()
 
-    args = sys.argv[1:] if len(sys.argv) > 1 else fetch_args()
+    command = config.choices[result]
 
-    command = config.choices[result].replace('{package}', args)
+    if contains_variables(command):
+        regex = re.compile(REGEX_STRING)
+        variables = regex.findall(command)
+
+        args = sys.argv[1:] if len(sys.argv) > 1 else fetch_args(variables)
+        command = substitute_variables(command, variables, args)
+
+    utils.cprint(f"\n\n{command}", color=colors.bright(colors.foreground['green']))
     run_shell_command(command)
