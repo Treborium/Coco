@@ -14,27 +14,20 @@ def cli():
     pass
 
 
-@cli.command("add", short_help="Add a link")
+@cli.command("add", short_help="Add a prompt")
 @click.argument("path", required=True, type=click.Path(resolve_path=True))
 @click.argument("name", required=True)
-def add_config_file(path, name):
-    """Add a link to a config file"""
+def add_prompt(path, name):
+    """Add a prompt"""
+    add_config_file(path, name)
 
-    new_entry = {name: path}
-
-    with open(CONFIG_PATH) as f:
-        config = json.load(f)
-
-    config.update(new_entry)
-
-    with open(CONFIG_PATH, 'w') as f:
-        json.dump(config, f)
+    
 
 
-@cli.command("rm", short_help="Remove a link")
+@cli.command("rm", short_help="Remove a prompt")
 @click.argument("name", required=True)
-def remove_link(name):
-    """Remove a link to a config file"""
+def remove_prompt(name):
+    """Remove a prompt"""
 
     with open(CONFIG_PATH) as f:
         config = json.load(f)
@@ -44,9 +37,9 @@ def remove_link(name):
         json.dump(config, f)
 
 
-@cli.command("ls", short_help="List all links")
-def list_links():
-    """List all links defined in the config file"""
+@cli.command("ls", short_help="List all prompts")
+def list_prompts():
+    """List all prompts defined in the config file"""
 
     with open(CONFIG_PATH) as f:
         config = json.load(f)
@@ -65,6 +58,28 @@ def run_prompt(name, args):
         config = json.load(f)
 
     prompt.run(config[name], *args)
+
+@cli.command("new", short_help="Generate a default config file and add it")
+@click.argument("path", required=True, type=click.Path(resolve_path=True))
+@click.argument("name", required=True)
+def new_entry(path, name):
+    default_config = {'prompt': "", 'choices': {}}
+    with open(path, 'w') as f:
+        json.dump(default_config, f)
+    
+    add_config_file(path, name)
+        
+
+def add_config_file(path, name):
+    new_entry = {name: path}
+
+    with open(CONFIG_PATH) as f:
+        config = json.load(f)
+
+    config.update(new_entry)
+
+    with open(CONFIG_PATH, 'w') as f:
+        json.dump(config, f)
 
 
 if __name__ == '__main__':
