@@ -9,7 +9,6 @@ from string import Template
 
 from bullet import Bullet, charDef, colors, keyhandler, utils
 
-CONFIG_FILE_PATH = f'{Path.home()}/.config/coco/config.json'
 CHOICES_KEY = 'choices'
 PROMPT_KEY = 'prompt'
 REGEX_STRING = "\{(.+?)\}"
@@ -64,7 +63,7 @@ def substitute_variables(command: str, variables, args) -> str:
 
 
 if __name__ == '__main__':
-    config = ConfigFile(CONFIG_FILE_PATH)
+    config = ConfigFile(sys.argv[1])
 
     prompt = config.prompt
     choices = list(config.choices.keys())
@@ -92,7 +91,7 @@ if __name__ == '__main__':
         regex = re.compile(REGEX_STRING)
         variables = regex.findall(command)
 
-        args = sys.argv[1:] if len(sys.argv) > 1 else fetch_args(variables)
+        args = sys.argv[2:] if len(sys.argv) > 2 else fetch_args(variables)
         command = substitute_variables(command, variables, args)
 
     utils.cprint(f"\n\n{command}", color=colors.bright(
