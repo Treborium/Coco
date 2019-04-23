@@ -28,7 +28,11 @@ def add_prompt(path, name):
 @click.argument("name", required=True)
 @click.option('--delete-config', is_flag=True)
 def remove_prompt(name, delete_config):
-    """Remove a prompt"""
+    """Remove a prompt
+
+    If the flag --delete-config is present the associated config file
+    will also be deleted.
+    """
 
     with open(CONFIG_PATH) as f:
         config = json.load(f)
@@ -64,10 +68,12 @@ def run_prompt(name, args):
 
     prompt.run(config[name], *args)
 
-@cli.command("new", short_help="Generate a default config file and add it")
+@cli.command("new", short_help="Generate a default config file")
 @click.argument("path", required=True, type=click.Path(resolve_path=True))
 @click.argument("name", required=True)
 def new_entry(path, name):
+    """Generate a default config file for a new entry."""
+
     default_config = {'prompt': "Select command to run:", 'choices': {}}
     with open(path, 'w') as f:
         json.dump(default_config, f)
