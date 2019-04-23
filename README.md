@@ -1,4 +1,3 @@
 # COCO
 
-Coco stands for Commands Collection and is a command line tool for collecting
-and managing command line tools.
+Coco is a tool for collecting commands in an easy and organized way.
