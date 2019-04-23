@@ -7,7 +7,7 @@ import os
 import prompt
 
 
-CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + '/config.json'
+CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + '/database.json'
 
 @click.group()
 def cli():
