@@ -66,7 +66,12 @@ def run_prompt(name, args):
     with open(CONFIG_PATH) as f:
         config = json.load(f)
 
-    path = config[name]
+    try:
+        path = config[name]
+    except KeyError:
+        prompt.utils.cprint(f"Error: There is no prompt named '{name}'!", color=prompt.colors.foreground['red'])
+        return
+
     if "~" in path:
         absolute_path = Path(path).expanduser()
     else:
@@ -101,4 +106,3 @@ def add_config_file(path, name):
 
     with open(CONFIG_PATH, 'w') as f:
         json.dump(config, f)
-
