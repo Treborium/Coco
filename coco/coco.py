@@ -91,8 +91,11 @@ def new_entry(path, name):
 def add_config_file(path, name):
     entry = {name: path}
 
-    with open(CONFIG_PATH) as (f, error):
-        config = json.load(f) if not error else dict()
+    try:
+        with open(CONFIG_PATH) as f:
+            config = json.load(f)
+    except IOError:
+        config = dict()
 
     config.update(entry)
 
