@@ -21,7 +21,10 @@ def cli():
 @click.argument("name", required=True)
 def add_prompt(path, name):
     """Add a prompt"""
-    add_entry_to_database(path, name)
+    if os.path.exists(path):
+        add_entry_to_database(path, name)
+    else:
+        print_error(f"Error: The file does not exist: {path}")
 
 
 @cli.command("rm", short_help="Remove a prompt")
@@ -69,7 +72,7 @@ def run_prompt(name, args):
     try:
         path = config[name]
     except KeyError:
-        prompt.utils.cprint(f"Error: There is no prompt named '{name}'!", color=prompt.colors.foreground['red'])
+        print_error(f"Error: There is no prompt named '{name}'!")
         return
 
     if "~" in path:
@@ -106,3 +109,7 @@ def add_entry_to_database(path, name):
 
     with open(DATABASE_FILE_PATH, 'w') as f:
         json.dump(config, f)
+
+
+def print_error(message: str):
+    prompt.utils.cprint(message, color=prompt.colors.foreground['red'])
