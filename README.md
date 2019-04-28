@@ -99,3 +99,19 @@ If you wish to also delete the associated config file from your system add the `
 ```sh
 coco rm --delete-config [NAME]
 ```
+
+## Config Files
+
+An example config file can be viewed [here](https://github.com/Treborium/Coco/blob/master/coco/coco.json)
+
+As you can probably guess the file needs to be valid json, however the file extension does _not_ matter.
+
+If you want to specify arguments for your commands you can do so by wrapping them in curly braces:
+
+```json
+{
+    "prompt": "Pacman commands:",
+    "choices": {
+        "install": "sudo pacman -S {package}",
+    }
+}
