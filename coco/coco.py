@@ -8,7 +8,7 @@ import click
 
 from . import prompt
 
-CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + '/database.json'
+DATABASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__)) + '/database.json'
 
 
 @click.group()
@@ -21,7 +21,7 @@ def cli():
 @click.argument("name", required=True)
 def add_prompt(path, name):
     """Add a prompt"""
-    add_config_file(path, name)
+    add_entry_to_database(path, name)
 
 
 @cli.command("rm", short_help="Remove a prompt")
@@ -34,12 +34,12 @@ def remove_prompt(name, delete_config):
     will also be deleted.
     """
 
-    with open(CONFIG_PATH) as f:
+    with open(DATABASE_FILE_PATH) as f:
         config = json.load(f)
         path = config[name]
         del config[name]
 
-    with open(CONFIG_PATH, 'w') as f:
+    with open(DATABASE_FILE_PATH, 'w') as f:
         json.dump(config, f)
 
     if delete_config:
@@ -50,7 +50,7 @@ def remove_prompt(name, delete_config):
 def list_prompts():
     """List all prompts defined in the config file"""
 
-    with open(CONFIG_PATH) as f:
+    with open(DATABASE_FILE_PATH) as f:
         config = json.load(f)
 
     for key, value in config.items():
@@ -63,7 +63,7 @@ def list_prompts():
 def run_prompt(name, args):
     """Run a prompt"""
 
-    with open(CONFIG_PATH) as f:
+    with open(DATABASE_FILE_PATH) as f:
         config = json.load(f)
 
     try:
@@ -90,19 +90,19 @@ def new_entry(path, name):
     with open(path, 'w') as f:
         json.dump(default_config, f)
 
-    add_config_file(path, name)
+    add_entry_to_database(path, name)
 
 
-def add_config_file(path, name):
+def add_entry_to_database(path, name):
     entry = {name: path}
 
     try:
-        with open(CONFIG_PATH) as f:
+        with open(DATABASE_FILE_PATH) as f:
             config = json.load(f)
     except IOError:
         config = dict()
 
     config.update(entry)
 
-    with open(CONFIG_PATH, 'w') as f:
+    with open(DATABASE_FILE_PATH, 'w') as f:
         json.dump(config, f)
