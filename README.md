@@ -143,3 +143,4 @@ If you want to specify arguments for your commands you can do so by wrapping the
 
 - [ ] Support for piped operations
 - [ ] Usage of the same argument in multiple places like `pip search {package} | grep {package}`
+- [ ] Add new command to easily edit the config files
