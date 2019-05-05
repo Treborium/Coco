@@ -112,6 +112,12 @@ If you want to specify arguments for your commands you can do so by wrapping the
 {
     "prompt": "Pacman commands:",
     "choices": {
-        "install": "sudo pacman -S {package}",
+        "install": "sudo pacman -S {package}"
     }
 }
+```
+
+## TODO
+
+- [ ] Support for the pipe operator
+- [ ] Usage of the same argument in multiple places like `pip search {package} | rg {package}`
