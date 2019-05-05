@@ -4,6 +4,11 @@
 
 Coco is a tool for collecting commands in an easy and organized way.
 
+<p align="center">
+    <img src="https://treborium.github.io/Coco/Resources/coco-preview.svg" alt="Usage of arguments"/>
+</p> 
+
+
 ## Installation
 
 Coco is available in [PyPi](https://pypi.org/project/coco-cli/) and can be installed via pip:
@@ -78,7 +83,7 @@ If the prompt requires parameters you can either append them at the end or let c
   </p> 
 
 
-A possible config file entry could look like this
+And a possible config file entry could look like this
 
 ```json
 {
