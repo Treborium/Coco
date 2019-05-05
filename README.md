@@ -1,7 +1,5 @@
 # COCO
 
-## About
-
 Coco is a tool for collecting commands in an easy and organized way.
 
 <p align="center">
@@ -19,10 +17,10 @@ pip install --user coco-cli
 
 ## Features
 
-- Custom prompts
-- List existing prompts
-- Add or remove prompts
-- Easy to remember commands like `ls` for listing or `rm` for removing
+- Custom prompts :star2:
+- List existing prompts :notebook:
+- Add or remove prompts :cactus:
+- Easy to remember commands like `ls` for listing or `rm` for removing :bulb:
 
 ## Usage
 
@@ -58,7 +56,7 @@ However since coco expects valid json it is a nice convention to use the `.json`
 
 ### Add prompt
 
-If you already created a valid config file with your desired commands you can add it via
+If you've already created a valid config file with your desired commands you can add it via
 
 ```sh
 coco add [PATH] [NAME]
@@ -111,7 +109,7 @@ Removing an existing prompt is as easy as using:
 coco rm [NAME]
 ```
 
-`[Name]` of course specifies the name of the prompt that you wish to be removed.
+`[Name]` of course specifies the name of the prompt that you wish to remove.
 To list the names of all available prompts use `coco ls`.
 
 If you wish to also delete the associated config file from your system add the `--delete-config` flag:
