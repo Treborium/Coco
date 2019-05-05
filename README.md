@@ -73,7 +73,10 @@ coco run [NAME]
 
 If the prompt requires parameters you can either append them at the end or let coco ask the user for input:
 
-<!-- Add animated terminal video showing both options with coco -->
+ <p align="center">
+    <img src="https://treborium.github.io/Coco/Resources/argument-usage.svg" alt="Usage of arguments"/>
+  </p>
+
 
 ### List available prompts
 
