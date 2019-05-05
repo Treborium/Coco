@@ -75,8 +75,20 @@ If the prompt requires parameters you can either append them at the end or let c
 
  <p align="center">
     <img src="https://treborium.github.io/Coco/Resources/argument-usage.svg" alt="Usage of arguments"/>
-  </p>
+  </p> 
 
+
+A possible config file entry could look like this
+
+```json
+{
+    "prompt": "Select command to run:",
+    "choices": {
+        "Show package details": "pip show {package}",
+        ...
+    }
+}
+```
 
 ### List available prompts
 
@@ -120,7 +132,9 @@ If you want to specify arguments for your commands you can do so by wrapping the
 }
 ```
 
+---
+
 ## TODO
 
-- [ ] Support for the pipe operator
-- [ ] Usage of the same argument in multiple places like `pip search {package} | rg {package}`
+- [ ] Support for piped operations
+- [ ] Usage of the same argument in multiple places like `pip search {package} | grep {package}`
