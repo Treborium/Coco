@@ -10,3 +10,7 @@
 
 # Virtual environtment
 /venv
+
+.vscode
+.idea
+/coco/database.json
