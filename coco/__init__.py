@@ -1,1 +1,2 @@
-from . import coco
+import coco
+name = "Coco"
