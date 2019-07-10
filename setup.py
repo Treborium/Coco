@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="coco-cli",
-    version="2.2",
+    version="2.3",
     author="Robert Fuchs",
     author_email="RobertFuchs97@gmail.com",
     description="A CLI tool for managing your CLI tools",
