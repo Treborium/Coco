@@ -75,12 +75,9 @@ def run_prompt(name, args):
         print_error(f"Error: There is no prompt named '{name}'!")
         return
 
-    if "~" in path:
-        absolute_path = Path(path).expanduser()
-    else:
-        absolute_path = Path(path).resolve()
+    resolved_path = resolve_to_absolute_path(path)
 
-    prompt.run(absolute_path, *args)
+    prompt.run(resolved_path, *args)
 
 
 @cli.command("new", short_help="Generate a default config file")
@@ -94,6 +91,26 @@ def new_entry(path, name):
         json.dump(default_config, f)
 
     add_entry_to_database(path, name)
+
+
+@cli.command("edit", short_help="Open a desired config file in your systems default editor")
+@click.argument("name", required=True)
+def edit_entry(name):
+    "Open the desired config file to a command in your systems default editor"
+    with open(DATABASE_FILE_PATH) as f:
+        config = json.load(f)
+
+    try:
+        path = config[name]
+    except KeyError:
+        print_error(f"Error: There is no prompt named '{name}'!")
+        return
+
+    resolved_path = resolve_to_absolute_path(path)
+    # TODO: Open Text file in systems default editor
+    editor = (os.environ['EDITOR'])
+    prompt.run_shell_command(f"{editor} {resolved_path}")
+
 
 
 def add_entry_to_database(path, name):
@@ -113,3 +130,10 @@ def add_entry_to_database(path, name):
 
 def print_error(message: str):
     prompt.utils.cprint(message, color=prompt.colors.foreground['red'])
+
+
+def resolve_to_absolute_path(path: str):
+    if "~" in path:
+        return Path(path).expanduser()
+
+    return Path(path).resolve()
